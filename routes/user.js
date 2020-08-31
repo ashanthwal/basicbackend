@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { sayHello } = require("../controller/user");
+const { userById } = require("../controller/user");
+const { requireSignin, isAdmin, isAuth } = require("../controller/auth");
 
-router.get("/", sayHello);
+// runs anytime there is a user-id involved
+router.param("userId", userById);
+
+router.get("/secret/:userId", requireSignin, isAuth, isAdmin, (req, res) => {
+  res.json({ user: req.profile });
+});
 
 module.exports = router;
